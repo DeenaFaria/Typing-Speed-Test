@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Speed Test</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const sampleText = "The quick brown fox jumps over the lazy dog.";
+
+    const TypingSpeedTest = () => {
+      const [inputText, setInputText] = useState("");
+      const [startTime, setStartTime] = useState(null);
+      const [endTime, setEndTime] = useState(null);
+      const [isFinished, setIsFinished] = useState(false);
+
+      const handleChange = (e) => {
+        const { value } = e.target;
+        setInputText(value);
+
+        if (value.length === 1 && !startTime) {
+          setStartTime(new Date());
+        }
+
+        if (value === sampleText) {
+          setEndTime(new Date());
+          setIsFinished(true);
+        }
+      };
+
+      const calculateWPM = () => {
+        if (startTime && endTime) {
+          const timeDiff = (endTime - startTime) / 1000 / 60;
+          const wordCount = sampleText.split(" ").length;
+          return Math.round(wordCount / timeDiff);
+        }
+        return 0;
+      };
+
+      return (
+        <div>
+          <h1>Typing Speed Test</h1>
+          <p>Type the following text as quickly as possible:</p>
+          <blockquote>{sampleText}</blockquote>
+          <textarea
+            value={inputText}
+            onChange={handleChange}
+            disabled={isFinished}
+            placeholder="Start typing here..."
+          />
+          {isFinished && (
+            <div>
+              <h2>Test Finished!</h2>
+              <p>Your typing speed is {calculateWPM()} words per minute.</p>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const App = () => {
+      return (
+        <div className="App">
+          <TypingSpeedTest />
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+  <div class="footer">
+  &copy 2024 Deena Faria. All rights reserverd.
+  </div>
+</body>
+</html>
